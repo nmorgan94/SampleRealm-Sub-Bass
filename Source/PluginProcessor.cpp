@@ -127,7 +127,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     juce::ScopedNoDenormals noDenormals;
     buffer.clear();
 
-    const auto paramValue = [this] (const juce::ParameterID& id)
+    const auto paramValue = [this] (const juce::ParameterID& id) -> float
     {
         return *apvts.getRawParameterValue (id.getParamID());
     };

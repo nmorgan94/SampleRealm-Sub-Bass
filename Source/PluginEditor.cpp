@@ -87,6 +87,11 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
                     panelBounds.removeFromTop (static_cast<float> (rowHeaderHeight)).reduced (14.0f, 0.0f),
                     juce::Justification::centredLeft);
     }
+
+    g.setFont (juce::Font (CustomLookAndFeel::orbitronRegular()).withPointHeight (9.0f));
+    g.setColour (juce::Colour (0xff00d9ff).withAlpha (0.4f));
+    auto versionArea = juce::Rectangle<int> (getWidth() - 60, getHeight() - 23, 50, 12);
+    g.drawText ("v" + juce::String (JucePlugin_VersionString), versionArea, juce::Justification::centredRight);
 }
 
 void AudioPluginAudioProcessorEditor::resized()

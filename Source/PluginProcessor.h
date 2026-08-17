@@ -49,6 +49,7 @@ public:
 
 private:
     void handleMidiEvent (const juce::MidiMessage& message);
+    void removeHeldNote (int note);
 
     juce::AudioProcessorValueTreeState apvts { *this, nullptr, "Parameters",
                                                Parameters::createLayout() };

@@ -1,5 +1,13 @@
 #include "SubBassVoice.h"
 
+namespace
+{
+    float noteToFrequency (float midiNote)
+    {
+        return static_cast<float> (440.0 * std::pow (2.0, (static_cast<double> (midiNote) - 69.0) / 12.0));
+    }
+}
+
 //==============================================================================
 void SubBassVoice::prepare (double sampleRate)
 {
@@ -41,12 +49,10 @@ void SubBassVoice::noteOff()
 
 void SubBassVoice::updateOscillatorFrequencies()
 {
-    const auto octaveSemitones = params.octave * 12;
-    const auto osc1Note = static_cast<float> (currentMidiNote + octaveSemitones) + params.osc1Fine / 100.0f;
-    const auto osc2Note = static_cast<float> (currentMidiNote + octaveSemitones) + params.osc2Fine / 100.0f;
+    const auto baseNote = static_cast<float> (currentMidiNote + params.octave * 12);
 
-    osc1.setFrequency (static_cast<float> (440.0 * std::pow (2.0, (osc1Note - 69.0) / 12.0)));
-    osc2.setFrequency (static_cast<float> (440.0 * std::pow (2.0, (osc2Note - 69.0) / 12.0)));
+    osc1.setFrequency (noteToFrequency (baseNote + params.osc1Fine / 100.0f));
+    osc2.setFrequency (noteToFrequency (baseNote + params.osc2Fine / 100.0f));
 }
 
 void SubBassVoice::renderNextBlock (juce::AudioBuffer<float>& buffer, int startSample, int numSamples)

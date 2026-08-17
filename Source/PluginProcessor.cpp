@@ -127,16 +127,21 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     juce::ScopedNoDenormals noDenormals;
     buffer.clear();
 
+    const auto paramValue = [this] (const juce::ParameterID& id)
+    {
+        return *apvts.getRawParameterValue (id.getParamID());
+    };
+
     SubBassVoice::Params voiceParams;
-    voiceParams.octave = static_cast<int> (*apvts.getRawParameterValue (Parameters::oscOctaveId.getParamID()));
-    voiceParams.osc1Fine = *apvts.getRawParameterValue (Parameters::osc1FineId.getParamID());
-    voiceParams.osc2Fine = *apvts.getRawParameterValue (Parameters::osc2FineId.getParamID());
-    voiceParams.oscMix = *apvts.getRawParameterValue (Parameters::oscMixId.getParamID());
-    voiceParams.attack = *apvts.getRawParameterValue (Parameters::envAttackId.getParamID());
-    voiceParams.decay = *apvts.getRawParameterValue (Parameters::envDecayId.getParamID());
-    voiceParams.sustain = *apvts.getRawParameterValue (Parameters::envSustainId.getParamID());
-    voiceParams.release = *apvts.getRawParameterValue (Parameters::envReleaseId.getParamID());
-    voiceParams.saturationDrive = *apvts.getRawParameterValue (Parameters::saturationDriveId.getParamID());
+    voiceParams.octave = static_cast<int> (paramValue (Parameters::oscOctaveId));
+    voiceParams.osc1Fine = paramValue (Parameters::osc1FineId);
+    voiceParams.osc2Fine = paramValue (Parameters::osc2FineId);
+    voiceParams.oscMix = paramValue (Parameters::oscMixId);
+    voiceParams.attack = paramValue (Parameters::envAttackId);
+    voiceParams.decay = paramValue (Parameters::envDecayId);
+    voiceParams.sustain = paramValue (Parameters::envSustainId);
+    voiceParams.release = paramValue (Parameters::envReleaseId);
+    voiceParams.saturationDrive = paramValue (Parameters::saturationDriveId);
     voice.setParameters (voiceParams);
 
     int currentSample = 0;
@@ -154,8 +159,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
     voice.renderNextBlock (buffer, currentSample, buffer.getNumSamples() - currentSample);
 
-    const float gainDb = *apvts.getRawParameterValue (Parameters::masterGainId.getParamID());
-    const float gainLinear = juce::Decibels::decibelsToGain (gainDb, -60.0f);
+    const float gainLinear = juce::Decibels::decibelsToGain (paramValue (Parameters::masterGainId), -60.0f);
 
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
@@ -170,20 +174,24 @@ void AudioPluginAudioProcessor::handleMidiEvent (const juce::MidiMessage& messag
     if (message.isNoteOn())
     {
         const auto note = message.getNoteNumber();
-        heldNotes.erase (std::remove (heldNotes.begin(), heldNotes.end(), note), heldNotes.end());
+        removeHeldNote (note);
         heldNotes.push_back (note);
         voice.noteOn (note, heldNotes.size() == 1);
     }
     else if (message.isNoteOff())
     {
-        const auto note = message.getNoteNumber();
-        heldNotes.erase (std::remove (heldNotes.begin(), heldNotes.end(), note), heldNotes.end());
+        removeHeldNote (message.getNoteNumber());
 
         if (heldNotes.empty())
             voice.noteOff();
         else
             voice.noteOn (heldNotes.back(), false);
     }
+}
+
+void AudioPluginAudioProcessor::removeHeldNote (int note)
+{
+    heldNotes.erase (std::remove (heldNotes.begin(), heldNotes.end(), note), heldNotes.end());
 }
 
 //==============================================================================

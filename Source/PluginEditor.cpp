@@ -69,7 +69,6 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
     g.setFont (juce::Font (CustomLookAndFeel::orbitronBold()).withHeight (22.0f));
     g.drawText ("SampleRealm: SUB", titleBounds.reduced (20.0f, 0.0f), juce::Justification::centredLeft);
 
-
     g.setColour (CustomLookAndFeel::accent.withAlpha (0.6f));
     g.fillRect (juce::Rectangle<float> (0.0f, static_cast<float> (titleBarHeight - 1), bounds.getWidth(), 2.0f));
 

@@ -8,9 +8,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
 {
     setLookAndFeel (&customLookAndFeel);
 
-    addControl (Parameters::osc1CoarseId.getParamID(), "Osc 1 Coarse");
+    addControl (Parameters::oscOctaveId.getParamID(), "Octave");
     addControl (Parameters::osc1FineId.getParamID(), "Osc 1 Fine");
-    addControl (Parameters::osc2CoarseId.getParamID(), "Osc 2 Coarse");
     addControl (Parameters::osc2FineId.getParamID(), "Osc 2 Fine");
     addControl (Parameters::oscMixId.getParamID(), "Osc Mix");
     addControl (Parameters::envAttackId.getParamID(), "Attack");

@@ -9,9 +9,8 @@ namespace Parameters
 
     inline const juce::ParameterID masterGainId { "masterGain", versionHint };
 
-    inline const juce::ParameterID osc1CoarseId { "osc1Coarse", versionHint };
+    inline const juce::ParameterID oscOctaveId { "oscOctave", versionHint };
     inline const juce::ParameterID osc1FineId { "osc1Fine", versionHint };
-    inline const juce::ParameterID osc2CoarseId { "osc2Coarse", versionHint };
     inline const juce::ParameterID osc2FineId { "osc2Fine", versionHint };
     inline const juce::ParameterID oscMixId { "oscMix", versionHint };
 

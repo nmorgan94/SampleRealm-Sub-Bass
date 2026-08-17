@@ -12,16 +12,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createLayout()
             juce::AudioParameterFloatAttributes().withLabel ("dB")),
 
         std::make_unique<juce::AudioParameterInt>(
-            osc1CoarseId, "Osc 1 Coarse", -24, 24, 0,
-            juce::AudioParameterIntAttributes().withLabel ("st")),
+            oscOctaveId, "Octave", -3, 0, 0,
+            juce::AudioParameterIntAttributes().withLabel ("oct")),
         std::make_unique<juce::AudioParameterFloat>(
             osc1FineId, "Osc 1 Fine",
             juce::NormalisableRange<float> (-50.0f, 50.0f, 0.1f), 0.0f,
             juce::AudioParameterFloatAttributes().withLabel ("ct")),
 
-        std::make_unique<juce::AudioParameterInt>(
-            osc2CoarseId, "Osc 2 Coarse", -24, 24, 0,
-            juce::AudioParameterIntAttributes().withLabel ("st")),
         std::make_unique<juce::AudioParameterFloat>(
             osc2FineId, "Osc 2 Fine",
             juce::NormalisableRange<float> (-50.0f, 50.0f, 0.1f), 0.0f,

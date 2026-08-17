@@ -41,8 +41,9 @@ void SubBassVoice::noteOff()
 
 void SubBassVoice::updateOscillatorFrequencies()
 {
-    const auto osc1Note = static_cast<float> (currentMidiNote + params.osc1Coarse) + params.osc1Fine / 100.0f;
-    const auto osc2Note = static_cast<float> (currentMidiNote + params.osc2Coarse) + params.osc2Fine / 100.0f;
+    const auto octaveSemitones = params.octave * 12;
+    const auto osc1Note = static_cast<float> (currentMidiNote + octaveSemitones) + params.osc1Fine / 100.0f;
+    const auto osc2Note = static_cast<float> (currentMidiNote + octaveSemitones) + params.osc2Fine / 100.0f;
 
     osc1.setFrequency (static_cast<float> (440.0 * std::pow (2.0, (osc1Note - 69.0) / 12.0)));
     osc2.setFrequency (static_cast<float> (440.0 * std::pow (2.0, (osc2Note - 69.0) / 12.0)));

@@ -128,9 +128,8 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     buffer.clear();
 
     SubBassVoice::Params voiceParams;
-    voiceParams.osc1Coarse = static_cast<int> (*apvts.getRawParameterValue (Parameters::osc1CoarseId.getParamID()));
+    voiceParams.octave = static_cast<int> (*apvts.getRawParameterValue (Parameters::oscOctaveId.getParamID()));
     voiceParams.osc1Fine = *apvts.getRawParameterValue (Parameters::osc1FineId.getParamID());
-    voiceParams.osc2Coarse = static_cast<int> (*apvts.getRawParameterValue (Parameters::osc2CoarseId.getParamID()));
     voiceParams.osc2Fine = *apvts.getRawParameterValue (Parameters::osc2FineId.getParamID());
     voiceParams.oscMix = *apvts.getRawParameterValue (Parameters::oscMixId.getParamID());
     voiceParams.attack = *apvts.getRawParameterValue (Parameters::envAttackId.getParamID());

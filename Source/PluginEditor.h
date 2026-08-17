@@ -32,5 +32,11 @@ private:
 
     std::vector<std::unique_ptr<SliderWithLabel>> controls;
 
+    static constexpr int numColumns = 4;
+    static constexpr int numRows = 3;
+
+    std::array<juce::String, numRows> rowTitles { "OSCILLATOR", "ENVELOPE", "OUTPUT" };
+    std::array<juce::Rectangle<int>, numRows> rowBounds;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessorEditor)
 };

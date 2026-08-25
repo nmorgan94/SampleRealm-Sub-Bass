@@ -25,14 +25,26 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     addControl (Parameters::envReleaseId.getParamID(), "Release");
 
     addControl (Parameters::saturationDriveId.getParamID(), "Drive");
-    addControl (Parameters::masterGainId.getParamID(), "Master Gain");
+
+    masterGainSlider.setPopupDisplayEnabled (true, true, this);
+    addAndMakeVisible (masterGainSlider);
+    masterGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
+        processorRef.getAPVTS(), Parameters::masterGainId.getParamID(), masterGainSlider);
+    addAndMakeVisible (masterMeter);
 
     setSize (700, 640);
+    startTimerHz (30);
 }
 
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor()
 {
     setLookAndFeel (nullptr);
+}
+
+void AudioPluginAudioProcessorEditor::timerCallback()
+{
+    masterMeter.setLevel (processorRef.getOutputLevel());
+    masterMeter.setClipping (processorRef.isOutputClipping());
 }
 
 //==============================================================================
@@ -88,6 +100,11 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
                     juce::Justification::centredLeft);
     }
 
+    auto masterLabelBounds = juce::Rectangle<int> (masterGainSlider.getX() - 74, 0, 66, titleBarHeight);
+    g.setColour (CustomLookAndFeel::textDim);
+    g.setFont (juce::Font (CustomLookAndFeel::orbitronBold()).withHeight (10.0f));
+    g.drawText ("MASTER", masterLabelBounds, juce::Justification::centredRight);
+
     g.setFont (juce::Font (CustomLookAndFeel::orbitronRegular()).withPointHeight (9.0f));
     g.setColour (juce::Colour (0xff00d9ff).withAlpha (0.4f));
     auto versionArea = juce::Rectangle<int> (getWidth() - 60, getHeight() - 23, 50, 12);
@@ -96,6 +113,18 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 void AudioPluginAudioProcessorEditor::resized()
 {
+    constexpr int meterWidth = 14;
+    constexpr int meterHeight = 40;
+    constexpr int knobSize = 44;
+    constexpr int rightMargin = 20;
+    constexpr int gap = 10;
+
+    const int meterX = getWidth() - rightMargin - meterWidth;
+    masterMeter.setBounds (meterX, (titleBarHeight - meterHeight) / 2, meterWidth, meterHeight);
+
+    const int knobX = meterX - gap - knobSize;
+    masterGainSlider.setBounds (knobX, (titleBarHeight - knobSize) / 2, knobSize, knobSize);
+
     auto bounds = getLocalBounds();
     bounds.removeFromTop (titleBarHeight);
     bounds.reduce (16, 16);

@@ -167,6 +167,15 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         juce::FloatVectorOperations::multiply (channelData, gainLinear,
                                                buffer.getNumSamples());
     }
+
+    const auto peak = buffer.getMagnitude (0, buffer.getNumSamples());
+    outputPeakLevel.store (peak, std::memory_order_relaxed);
+
+    constexpr int clipHoldBlocks = 30;
+    if (peak > 1.0f)
+        clipHoldCounter.store (clipHoldBlocks, std::memory_order_relaxed);
+    else if (const auto current = clipHoldCounter.load (std::memory_order_relaxed); current > 0)
+        clipHoldCounter.store (current - 1, std::memory_order_relaxed);
 }
 
 void AudioPluginAudioProcessor::handleMidiEvent (const juce::MidiMessage& message)

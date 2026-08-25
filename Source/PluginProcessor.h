@@ -47,6 +47,9 @@ public:
     //==============================================================================
     juce::AudioProcessorValueTreeState& getAPVTS() { return apvts; }
 
+    float getOutputLevel() const { return outputPeakLevel.load (std::memory_order_relaxed); }
+    bool isOutputClipping() const { return clipHoldCounter.load (std::memory_order_relaxed) > 0; }
+
 private:
     void handleMidiEvent (const juce::MidiMessage& message);
     void removeHeldNote (int note);
@@ -56,6 +59,9 @@ private:
 
     SubBassVoice voice;
     std::vector<int> heldNotes;
+
+    std::atomic<float> outputPeakLevel { 0.0f };
+    std::atomic<int> clipHoldCounter { 0 };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
 };

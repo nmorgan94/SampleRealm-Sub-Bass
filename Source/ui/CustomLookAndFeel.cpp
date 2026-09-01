@@ -12,6 +12,16 @@ CustomLookAndFeel::CustomLookAndFeel()
     setColour (juce::Slider::textBoxBackgroundColourId, juce::Colours::transparentBlack);
     setColour (juce::Slider::textBoxOutlineColourId, juce::Colours::transparentBlack);
     setColour (juce::Label::textColourId, textDim);
+
+    setColour (juce::ComboBox::backgroundColourId, panel);
+    setColour (juce::ComboBox::outlineColourId, panelBorder);
+    setColour (juce::ComboBox::textColourId, text);
+    setColour (juce::ComboBox::arrowColourId, accent);
+    setColour (juce::TextButton::buttonColourId, panel);
+    setColour (juce::TextButton::textColourOffId, text);
+    setColour (juce::PopupMenu::backgroundColourId, panel);
+    setColour (juce::PopupMenu::textColourId, text);
+    setColour (juce::PopupMenu::highlightedBackgroundColourId, accent.withAlpha (0.3f));
 }
 
 juce::Font CustomLookAndFeel::getLabelFont (juce::Label&)

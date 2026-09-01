@@ -34,6 +34,15 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
         processorRef.getAPVTS(), Parameters::masterGainId.getParamID(), masterGainSlider);
     addAndMakeVisible (masterMeter);
 
+    addAndMakeVisible (presetComboBox);
+    presetComboBox.setPresetManager (processorRef.getPresetManager());
+
+    savePresetButton.onClick = [this] { presetComboBox.promptToSavePreset(); };
+    addAndMakeVisible (savePresetButton);
+
+    deletePresetButton.onClick = [this] { presetComboBox.promptToDeletePreset(); };
+    addAndMakeVisible (deletePresetButton);
+
     setSize (700, 640);
     startTimerHz (30);
 }
@@ -132,6 +141,22 @@ void AudioPluginAudioProcessorEditor::resized()
 
     const int knobX = meterX - gap - knobSize;
     masterGainSlider.setBounds (knobX, (titleBarHeight - knobSize) / 2, knobSize, knobSize);
+
+    constexpr int presetComboWidth = 130;
+    constexpr int presetButtonWidth = 44;
+    constexpr int presetControlHeight = 24;
+    constexpr int presetGap = 6;
+    constexpr int titleTextClearance = 260;
+
+    const int presetClusterWidth = presetComboWidth + presetGap + presetButtonWidth * 2 + presetGap;
+    const int masterSectionLeft = knobX - 74 - 20;
+    const int presetClusterX = titleTextClearance
+                              + juce::jmax (0, (masterSectionLeft - titleTextClearance - presetClusterWidth) / 2);
+    const int presetY = (titleBarHeight - presetControlHeight) / 2;
+
+    presetComboBox.setBounds (presetClusterX, presetY, presetComboWidth, presetControlHeight);
+    savePresetButton.setBounds (presetComboBox.getRight() + presetGap, presetY, presetButtonWidth, presetControlHeight);
+    deletePresetButton.setBounds (savePresetButton.getRight() + presetGap, presetY, presetButtonWidth, presetControlHeight);
 
     auto bounds = getLocalBounds();
     bounds.removeFromTop (titleBarHeight);

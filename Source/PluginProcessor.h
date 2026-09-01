@@ -2,6 +2,7 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "Parameters.h"
+#include "PresetManager.h"
 #include "dsp/SubBassVoice.h"
 
 //==============================================================================
@@ -46,6 +47,7 @@ public:
 
     //==============================================================================
     juce::AudioProcessorValueTreeState& getAPVTS() { return apvts; }
+    PresetManager& getPresetManager() { return presetManager; }
 
     float getOutputLevel() const { return outputPeakLevel.load (std::memory_order_relaxed); }
     bool isOutputClipping() const { return clipHoldCounter.load (std::memory_order_relaxed) > 0; }
@@ -56,6 +58,7 @@ private:
 
     juce::AudioProcessorValueTreeState apvts { *this, nullptr, "Parameters",
                                                Parameters::createLayout() };
+    PresetManager presetManager { apvts };
 
     SubBassVoice voice;
     std::vector<int> heldNotes;

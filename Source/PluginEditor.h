@@ -4,6 +4,7 @@
 #include "ui/CustomLookAndFeel.h"
 #include "ui/EnvelopeVisualizer.h"
 #include "ui/LevelMeter.h"
+#include "ui/PresetComboBox.h"
 
 //==============================================================================
 class AudioPluginAudioProcessorEditor final : public juce::AudioProcessorEditor,
@@ -38,6 +39,10 @@ private:
     std::vector<std::unique_ptr<SliderWithLabel>> controls;
 
     EnvelopeVisualizer envelopeVisualizer;
+
+    PresetComboBox presetComboBox;
+    juce::TextButton savePresetButton { "Save" };
+    juce::TextButton deletePresetButton { "Delete" };
 
     // Master gain lives in the title bar, not the parameter grid, so it's wired up separately.
     juce::Slider masterGainSlider { juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::NoTextBox };

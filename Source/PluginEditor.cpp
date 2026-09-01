@@ -14,6 +14,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
 {
     setLookAndFeel (&customLookAndFeel);
 
+    addAndMakeVisible (envelopeVisualizer);
+
     addControl (Parameters::oscOctaveId.getParamID(), "Octave");
     addControl (Parameters::osc1FineId.getParamID(), "Osc 1 Fine");
     addControl (Parameters::osc2FineId.getParamID(), "Osc 2 Fine");
@@ -45,6 +47,12 @@ void AudioPluginAudioProcessorEditor::timerCallback()
 {
     masterMeter.setLevel (processorRef.getOutputLevel());
     masterMeter.setClipping (processorRef.isOutputClipping());
+
+    auto& apvts = processorRef.getAPVTS();
+    envelopeVisualizer.setADSR (*apvts.getRawParameterValue (Parameters::envAttackId.getParamID()),
+                                *apvts.getRawParameterValue (Parameters::envDecayId.getParamID()),
+                                *apvts.getRawParameterValue (Parameters::envSustainId.getParamID()),
+                                *apvts.getRawParameterValue (Parameters::envReleaseId.getParamID()));
 }
 
 //==============================================================================
@@ -137,6 +145,10 @@ void AudioPluginAudioProcessorEditor::resized()
         rowBounds[static_cast<size_t> (row)] = panel;
 
         auto content = panel.withTrimmedTop (rowHeaderHeight).reduced (10, 4);
+
+        if (row == envelopeRowIndex)
+            envelopeVisualizer.setBounds (content);
+
         const int itemsInRow = juce::jmin (numColumns, static_cast<int> (controls.size()) - row * numColumns);
         if (itemsInRow <= 0)
             continue;

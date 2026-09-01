@@ -2,6 +2,7 @@
 
 #include "PluginProcessor.h"
 #include "ui/CustomLookAndFeel.h"
+#include "ui/EnvelopeVisualizer.h"
 #include "ui/LevelMeter.h"
 
 //==============================================================================
@@ -36,6 +37,8 @@ private:
 
     std::vector<std::unique_ptr<SliderWithLabel>> controls;
 
+    EnvelopeVisualizer envelopeVisualizer;
+
     // Master gain lives in the title bar, not the parameter grid, so it's wired up separately.
     juce::Slider masterGainSlider { juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::NoTextBox };
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> masterGainAttachment;
@@ -43,6 +46,7 @@ private:
 
     static constexpr int numColumns = 4;
     static constexpr int numRows = 3;
+    static constexpr int envelopeRowIndex = 1;
 
     std::array<juce::String, numRows> rowTitles { "OSCILLATOR", "ENVELOPE", "OUTPUT" };
     std::array<juce::Rectangle<int>, numRows> rowBounds;

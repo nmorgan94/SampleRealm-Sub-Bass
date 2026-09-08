@@ -27,6 +27,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     addControl (Parameters::envReleaseId.getParamID(), "Release");
 
     addControl (Parameters::saturationDriveId.getParamID(), "Drive");
+    addControl (Parameters::glideTimeId.getParamID(), "Glide");
 
     masterGainSlider.setPopupDisplayEnabled (true, true, this);
     addAndMakeVisible (masterGainSlider);

@@ -1,20 +1,12 @@
 #include "SubBassVoice.h"
 
-namespace
-{
-    float noteToFrequency (float midiNote)
-    {
-        return static_cast<float> (440.0 * std::pow (2.0, (static_cast<double> (midiNote) - 69.0) / 12.0));
-    }
-}
-
 //==============================================================================
 void SubBassVoice::prepare (double sampleRate)
 {
     osc1.prepare (sampleRate);
     osc2.prepare (sampleRate);
     adsr.setSampleRate (sampleRate);
-    updateOscillatorFrequencies();
+    glide.prepare (sampleRate);
 }
 
 void SubBassVoice::setParameters (const Params& newParams)
@@ -29,14 +21,12 @@ void SubBassVoice::setParameters (const Params& newParams)
     adsr.setParameters (adsrParams);
 
     saturator.setDrive (params.saturationDrive);
-
-    updateOscillatorFrequencies();
+    glide.setGlideTime (params.glideTime);
 }
 
 void SubBassVoice::noteOn (int midiNoteNumber, bool retrigger)
 {
-    currentMidiNote = midiNoteNumber;
-    updateOscillatorFrequencies();
+    glide.startNote (static_cast<float> (midiNoteNumber), ! retrigger);
 
     if (retrigger)
         adsr.noteOn();
@@ -47,12 +37,12 @@ void SubBassVoice::noteOff()
     adsr.noteOff();
 }
 
-void SubBassVoice::updateOscillatorFrequencies()
+void SubBassVoice::updateOscillatorFrequencies (float noteNumber)
 {
-    const auto baseNote = static_cast<float> (currentMidiNote + params.octave * 12);
+    const auto baseNote = noteNumber + static_cast<float> (params.octave * 12);
 
-    osc1.setFrequency (noteToFrequency (baseNote + params.osc1Fine / 100.0f));
-    osc2.setFrequency (noteToFrequency (baseNote + params.osc2Fine / 100.0f));
+    osc1.setFrequency (noteNumberToFrequencyHz (baseNote + params.osc1Fine / 100.0f));
+    osc2.setFrequency (noteNumberToFrequencyHz (baseNote + params.osc2Fine / 100.0f));
 }
 
 void SubBassVoice::renderNextBlock (juce::AudioBuffer<float>& buffer, int startSample, int numSamples)
@@ -62,6 +52,8 @@ void SubBassVoice::renderNextBlock (juce::AudioBuffer<float>& buffer, int startS
 
     for (int i = 0; i < numSamples; ++i)
     {
+        updateOscillatorFrequencies (glide.getNextNoteNumber());
+
         const auto osc1Sample = osc1.renderSample();
         const auto osc2Sample = osc2.renderSample();
         const auto mixed = osc1Sample * (1.0f - params.oscMix) + osc2Sample * params.oscMix;

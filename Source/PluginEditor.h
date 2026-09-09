@@ -3,6 +3,7 @@
 #include "PluginProcessor.h"
 #include "ui/CustomLookAndFeel.h"
 #include "ui/EnvelopeVisualizer.h"
+#include "ui/LabeledSlider.h"
 #include "ui/LevelMeter.h"
 #include "ui/PresetComboBox.h"
 
@@ -21,14 +22,7 @@ public:
 private:
     void timerCallback() override;
 
-    struct SliderWithLabel
-    {
-        juce::Slider slider { juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::TextBoxBelow };
-        juce::Label label;
-        std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
-    };
-
-    SliderWithLabel& addControl (const juce::String& paramId, const juce::String& labelText);
+    LabeledSlider& addControl (const juce::String& paramId, const juce::String& labelText);
 
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -36,7 +30,7 @@ private:
 
     CustomLookAndFeel customLookAndFeel;
 
-    std::vector<std::unique_ptr<SliderWithLabel>> controls;
+    std::vector<std::unique_ptr<LabeledSlider>> controls;
 
     EnvelopeVisualizer envelopeVisualizer;
 

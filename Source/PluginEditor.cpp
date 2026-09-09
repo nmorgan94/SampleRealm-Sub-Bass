@@ -66,19 +66,14 @@ void AudioPluginAudioProcessorEditor::timerCallback()
 }
 
 //==============================================================================
-AudioPluginAudioProcessorEditor::SliderWithLabel& AudioPluginAudioProcessorEditor::addControl (
+LabeledSlider& AudioPluginAudioProcessorEditor::addControl (
     const juce::String& paramId, const juce::String& labelText)
 {
-    auto control = std::make_unique<SliderWithLabel>();
+    auto control = std::make_unique<LabeledSlider>();
 
-    control->label.setText (labelText, juce::dontSendNotification);
-    control->label.setJustificationType (juce::Justification::centred);
-    addAndMakeVisible (control->label);
-
-    control->slider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 64, 18);
-    addAndMakeVisible (control->slider);
-    control->attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
-        processorRef.getAPVTS(), paramId, control->slider);
+    control->setLabelText (labelText);
+    control->attachToParameter (processorRef.getAPVTS(), paramId);
+    addAndMakeVisible (*control);
 
     controls.push_back (std::move (control));
     return *controls.back();
@@ -187,9 +182,7 @@ void AudioPluginAudioProcessorEditor::resized()
             const auto index = static_cast<size_t> (row * numColumns + col);
             auto cell = content.withTrimmedLeft ((columnOffset + col) * cellWidth).withWidth (cellWidth).reduced (6);
 
-            auto& control = *controls[index];
-            control.label.setBounds (cell.removeFromTop (16));
-            control.slider.setBounds (cell);
+            controls[index]->setBounds (cell);
         }
     }
 }

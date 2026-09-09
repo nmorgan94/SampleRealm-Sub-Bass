@@ -16,7 +16,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
 
     addAndMakeVisible (envelopeVisualizer);
 
-    addControl (Parameters::oscOctaveId.getParamID(), "Octave");
+    addControl (Parameters::oscOctaveId.getParamID(), "Octave", juce::Slider::IncDecButtons);
     addControl (Parameters::osc1FineId.getParamID(), "Osc 1 Fine");
     addControl (Parameters::osc2FineId.getParamID(), "Osc 2 Fine");
     addControl (Parameters::oscMixId.getParamID(), "Osc Mix");
@@ -67,9 +67,9 @@ void AudioPluginAudioProcessorEditor::timerCallback()
 
 //==============================================================================
 LabeledSlider& AudioPluginAudioProcessorEditor::addControl (
-    const juce::String& paramId, const juce::String& labelText)
+    const juce::String& paramId, const juce::String& labelText, juce::Slider::SliderStyle style)
 {
-    auto control = std::make_unique<LabeledSlider>();
+    auto control = std::make_unique<LabeledSlider> (style);
 
     control->setLabelText (labelText);
     control->attachToParameter (processorRef.getAPVTS(), paramId);

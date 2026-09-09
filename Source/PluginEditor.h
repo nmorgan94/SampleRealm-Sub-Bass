@@ -22,7 +22,8 @@ public:
 private:
     void timerCallback() override;
 
-    LabeledSlider& addControl (const juce::String& paramId, const juce::String& labelText);
+    LabeledSlider& addControl (const juce::String& paramId, const juce::String& labelText,
+                               juce::Slider::SliderStyle style = juce::Slider::RotaryHorizontalVerticalDrag);
 
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.

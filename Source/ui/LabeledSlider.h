@@ -21,6 +21,7 @@ public:
 
     void resized() override;
     void mouseDoubleClick (const juce::MouseEvent&) override;
+    void parentHierarchyChanged() override;
 
 private:
     void showCurrentValue();
@@ -38,6 +39,7 @@ private:
 
     static constexpr int labelHeight = 16;
     static constexpr int revertDelayMs = 600;
+    static constexpr int incDecButtonsHeight = 70;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LabeledSlider)
 };

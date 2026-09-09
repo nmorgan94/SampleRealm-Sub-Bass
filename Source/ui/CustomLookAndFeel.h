@@ -21,6 +21,8 @@ public:
                             float sliderPosProportional, float rotaryStartAngle,
                             float rotaryEndAngle, juce::Slider&) override;
 
+    juce::Button* createSliderButton (juce::Slider&, bool isIncrement) override;
+
     juce::Font getLabelFont (juce::Label&) override;
 
     [[nodiscard]] static juce::FontOptions orbitronRegular();

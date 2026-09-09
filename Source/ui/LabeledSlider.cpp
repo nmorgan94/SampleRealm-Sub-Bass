@@ -37,6 +37,14 @@ void LabeledSlider::attachToParameter (juce::AudioProcessorValueTreeState& apvts
     slider.setDoubleClickReturnValue (false, 0.0);
 }
 
+void LabeledSlider::parentHierarchyChanged()
+{
+    // The slider bakes in look-and-feel-dependent child components (e.g. IncDecButtons)
+    // at construction time, before this component is parented and can resolve the real
+    // look and feel. Force it to rebuild them now that the ancestor chain is in place.
+    slider.sendLookAndFeelChange();
+}
+
 void LabeledSlider::mouseDoubleClick (const juce::MouseEvent&)
 {
     stopTimer();
@@ -77,5 +85,9 @@ void LabeledSlider::resized()
 {
     auto bounds = getLocalBounds();
     label.setBounds (bounds.removeFromBottom (labelHeight));
+
+    if (slider.getSliderStyle() == juce::Slider::IncDecButtons)
+        bounds = bounds.withSizeKeepingCentre (bounds.getWidth(), incDecButtonsHeight);
+
     slider.setBounds (bounds);
 }

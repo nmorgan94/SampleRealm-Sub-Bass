@@ -45,6 +45,19 @@ juce::FontOptions CustomLookAndFeel::orbitronBold()
     return juce::FontOptions (typeface);
 }
 
+juce::Button* CustomLookAndFeel::createSliderButton (juce::Slider&, bool isIncrement)
+{
+    auto* button = new juce::TextButton (isIncrement ? "+" : "-");
+
+    button->setColour (juce::TextButton::buttonColourId, panel);
+    button->setColour (juce::TextButton::textColourOffId, accent);
+    button->setColour (juce::TextButton::textColourOnId, accent);
+    button->setColour (juce::ComboBox::outlineColourId, accent);
+    button->setConnectedEdges (isIncrement ? juce::Button::ConnectedOnLeft : juce::Button::ConnectedOnRight);
+
+    return button;
+}
+
 void CustomLookAndFeel::drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height,
                                           float sliderPosProportional, float rotaryStartAngle,
                                           float rotaryEndAngle, juce::Slider&)

@@ -12,7 +12,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createLayout()
             juce::AudioParameterFloatAttributes().withLabel ("dB")),
 
         std::make_unique<juce::AudioParameterInt>(
-            oscOctaveId, "Octave", -3, 0, 0,
+            oscOctaveId, "Octave", -4, 0, -2,
             juce::AudioParameterIntAttributes().withLabel ("oct")),
         std::make_unique<juce::AudioParameterFloat>(
             osc1FineId, "Osc 1 Fine",

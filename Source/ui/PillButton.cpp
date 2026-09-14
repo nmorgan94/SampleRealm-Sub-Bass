@@ -32,6 +32,6 @@ void PillButton::paintButton (juce::Graphics& g, bool shouldDrawButtonAsHighligh
     g.drawRoundedRectangle (bounds.reduced (0.5f), cornerRadius, 1.0f);
 
     g.setColour (isOn ? CustomLookAndFeel::background : CustomLookAndFeel::textDim);
-    g.setFont (juce::Font (CustomLookAndFeel::orbitronBold()).withHeight (fontHeight));
+    g.setFont (CustomLookAndFeel::boldFont (fontHeight));
     g.drawText (isOn ? onStateText : offStateText, bounds, juce::Justification::centred);
 }

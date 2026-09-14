@@ -26,7 +26,12 @@ CustomLookAndFeel::CustomLookAndFeel()
 
 juce::Font CustomLookAndFeel::getLabelFont (juce::Label&)
 {
-    return juce::Font (orbitronBold()).withHeight (13.0f);
+    return boldFont (13.0f);
+}
+
+juce::Font CustomLookAndFeel::boldFont (float height)
+{
+    return juce::Font (orbitronBold()).withHeight (height);
 }
 
 juce::FontOptions CustomLookAndFeel::orbitronRegular()

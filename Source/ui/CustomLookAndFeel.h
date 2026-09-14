@@ -25,9 +25,11 @@ public:
 
     juce::Font getLabelFont (juce::Label&) override;
 
+    [[nodiscard]] static juce::Font boldFont (float height);
     [[nodiscard]] static juce::FontOptions orbitronRegular();
-    [[nodiscard]] static juce::FontOptions orbitronBold();
 
 private:
+    [[nodiscard]] static juce::FontOptions orbitronBold();
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomLookAndFeel)
 };

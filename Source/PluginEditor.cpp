@@ -98,7 +98,7 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
     auto titleBounds = getLocalBounds().removeFromTop (titleBarHeight).toFloat();
     g.setColour (CustomLookAndFeel::text);
-    g.setFont (juce::Font (CustomLookAndFeel::orbitronBold()).withHeight (22.0f));
+    g.setFont (CustomLookAndFeel::boldFont (22.0f));
     g.drawText ("SampleRealm: SUB", titleBounds.reduced (20.0f, 0.0f), juce::Justification::centredLeft);
 
     g.setColour (CustomLookAndFeel::accent.withAlpha (0.6f));
@@ -114,7 +114,7 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
         g.drawRoundedRectangle (panelBounds, 10.0f, 1.0f);
 
         g.setColour (CustomLookAndFeel::textDim);
-        g.setFont (juce::Font (CustomLookAndFeel::orbitronBold()).withHeight (12.0f));
+        g.setFont (CustomLookAndFeel::boldFont (12.0f));
         g.drawText (rowTitles[static_cast<size_t> (row)],
                     panelBounds.removeFromTop (static_cast<float> (rowHeaderHeight)).reduced (14.0f, 0.0f),
                     juce::Justification::centredLeft);
@@ -122,7 +122,7 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
     auto masterLabelBounds = juce::Rectangle<int> (masterGainSlider.getX() - 74, 0, 66, titleBarHeight);
     g.setColour (CustomLookAndFeel::textDim);
-    g.setFont (juce::Font (CustomLookAndFeel::orbitronBold()).withHeight (10.0f));
+    g.setFont (CustomLookAndFeel::boldFont (10.0f));
     g.drawText ("MASTER", masterLabelBounds, juce::Justification::centredRight);
 
     g.setFont (juce::Font (CustomLookAndFeel::orbitronRegular()).withPointHeight (9.0f));

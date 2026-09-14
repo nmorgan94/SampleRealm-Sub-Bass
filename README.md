@@ -5,8 +5,9 @@ A monophonic sub-bass synthesizer
 ## Features
 
 ### Oscillators
-- 2 sine oscillators with independent tuning
-- Coarse (±24 semitones) and fine (±50 cents) pitch per oscillator
+- 2 sine oscillators with independent fine tuning
+- Shared octave offset, −4 to 0 octaves
+- Fine pitch, ±50 cents per oscillator
 - Continuous crossfade between the two oscillators
 
 ### Voice
@@ -17,10 +18,22 @@ A monophonic sub-bass synthesizer
 ### Envelope
 - ADSR with attack, decay, and release from 1 ms to 5 seconds
 - Skewed ranges for finer control at short times
+- Drawn behind the sliders, with the effective drive curve overlaid on the same
 
 ### Saturation
-- tanh soft-clip drive, applied post-envelope
+- tanh soft-clip drive, applied pre-envelope
 - Gain-normalized, so raising drive adds harmonics without raising level
+
+#### Drive Env
+
+Drive Env scales Drive rather than offsetting it, which keeps Drive a ceiling —
+at Drive 0 the note stays clean whatever the amount is set to:
+
+| Amount | As the note decays  |
+| ------ | ------------------  | 
+| `+1`   | falls to clean      |
+| `0`    | full Drive          |
+| `−1`   | rises to full Drive |
 
 ### Output
 - Master gain, −60 to +6 dB

@@ -16,6 +16,7 @@ public:
         float oscMix = 0.5f;
         float attack = 0.005f, decay = 0.1f, sustain = 0.8f, release = 0.2f;
         float saturationDrive = 0.2f;
+        float saturationDriveEnv = 0.0f;
         float glideTime = 0.0f;
     };
 

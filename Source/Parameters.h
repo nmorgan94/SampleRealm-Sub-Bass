@@ -20,6 +20,7 @@ namespace Parameters
     inline const juce::ParameterID envReleaseId { "envRelease", versionHint };
 
     inline const juce::ParameterID saturationDriveId { "saturationDrive", versionHint };
+    inline const juce::ParameterID saturationDriveEnvId { "saturationDriveEnv", versionHint };
 
     inline const juce::ParameterID glideTimeId { "glideTime", versionHint };
 

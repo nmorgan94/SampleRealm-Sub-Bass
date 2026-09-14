@@ -19,8 +19,6 @@ void SubBassVoice::setParameters (const Params& newParams)
     adsrParams.sustain = params.sustain;
     adsrParams.release = params.release;
     adsr.setParameters (adsrParams);
-
-    saturator.setDrive (params.saturationDrive);
     glide.setGlideTime (params.glideTime);
 }
 
@@ -57,7 +55,12 @@ void SubBassVoice::renderNextBlock (juce::AudioBuffer<float>& buffer, int startS
         const auto osc1Sample = osc1.renderSample();
         const auto osc2Sample = osc2.renderSample();
         const auto mixed = osc1Sample * (1.0f - params.oscMix) + osc2Sample * params.oscMix;
-        const auto shaped = saturator.process (mixed * adsr.getNextSample());
+        const auto env = adsr.getNextSample();
+
+        saturator.setDrive (params.saturationDrive
+                            * driveEnvelopeModulation (env, params.saturationDriveEnv));
+        
+                            const auto shaped = saturator.process (mixed) * env;
 
         for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
             buffer.addSample (channel, startSample + i, shaped);

@@ -27,6 +27,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     addControl (Parameters::envReleaseId.getParamID(), "Release");
 
     addControl (Parameters::saturationDriveId.getParamID(), "Drive");
+    addControl (Parameters::saturationDriveEnvId.getParamID(), "Drive Env");
     addControl (Parameters::glideTimeId.getParamID(), "Glide");
 
     masterGainSlider.setPopupDisplayEnabled (true, true, this);
@@ -63,6 +64,8 @@ void AudioPluginAudioProcessorEditor::timerCallback()
                                 *apvts.getRawParameterValue (Parameters::envDecayId.getParamID()),
                                 *apvts.getRawParameterValue (Parameters::envSustainId.getParamID()),
                                 *apvts.getRawParameterValue (Parameters::envReleaseId.getParamID()));
+    envelopeVisualizer.setDrive (*apvts.getRawParameterValue (Parameters::saturationDriveId.getParamID()),
+                                 *apvts.getRawParameterValue (Parameters::saturationDriveEnvId.getParamID()));
 }
 
 //==============================================================================
@@ -175,12 +178,12 @@ void AudioPluginAudioProcessorEditor::resized()
             continue;
 
         const int cellWidth = content.getWidth() / numColumns;
-        const int columnOffset = (numColumns - itemsInRow) / 2;
+        const int columnOffset = (content.getWidth() - itemsInRow * cellWidth) / 2;
 
         for (int col = 0; col < itemsInRow; ++col)
         {
             const auto index = static_cast<size_t> (row * numColumns + col);
-            auto cell = content.withTrimmedLeft ((columnOffset + col) * cellWidth).withWidth (cellWidth).reduced (6);
+            auto cell = content.withTrimmedLeft (columnOffset + col * cellWidth).withWidth (cellWidth).reduced (6);
 
             controls[index]->setBounds (cell);
         }

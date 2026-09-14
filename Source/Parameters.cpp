@@ -47,6 +47,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createLayout()
         std::make_unique<juce::AudioParameterFloat>(
             saturationDriveId, "Drive",
             juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.2f),
+        std::make_unique<juce::AudioParameterFloat>(
+            saturationDriveEnvId, "Drive Env",
+            juce::NormalisableRange<float> (-1.0f, 1.0f, 0.001f), 0.0f),
 
         std::make_unique<juce::AudioParameterFloat>(
             glideTimeId, "Glide",

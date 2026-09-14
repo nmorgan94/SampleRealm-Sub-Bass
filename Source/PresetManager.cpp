@@ -98,6 +98,8 @@ bool PresetManager::loadPreset (const juce::String& name)
     if (xml == nullptr)
         return false;
 
+    resetToDefaults();
+
     apvts.replaceState (juce::ValueTree::fromXml (*xml));
     apvts.state.setProperty (currentPresetProperty, name, nullptr);
     return true;

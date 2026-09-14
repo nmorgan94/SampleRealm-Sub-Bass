@@ -3,10 +3,19 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 
 //==============================================================================
+inline constexpr float semitonesPerOctave = 12.0f;
+
 inline float noteNumberToFrequencyHz (float midiNoteNumber)
 {
-    return 440.0f * std::pow (2.0f, (midiNoteNumber - 69.0f) / 12.0f);
+    return 440.0f * std::pow (2.0f, (midiNoteNumber - 69.0f) / semitonesPerOctave);
 }
+
+//==============================================================================
+enum class GlideMode
+{
+    fixedTime,  // every slide takes the same time, whatever the interval
+    fixedRate   // pitch moves at a constant speed, so distance sets the time
+};
 
 //==============================================================================
 class GlideProcessor
@@ -15,24 +24,26 @@ public:
     void prepare (double newSampleRate)
     {
         sampleRate = newSampleRate;
-        noteSmoother.reset (sampleRate, static_cast<double> (glideTimeSeconds));
     }
 
-    void setGlideTime (float newGlideTimeSeconds)
+    void startNote (float midiNoteNumber, bool legato, float glideSeconds, GlideMode mode)
     {
-        if (juce::approximatelyEqual (newGlideTimeSeconds, glideTimeSeconds))
-            return;
-
-        glideTimeSeconds = newGlideTimeSeconds;
-        noteSmoother.reset (sampleRate, static_cast<double> (glideTimeSeconds));
-    }
-
-    void startNote (float midiNoteNumber, bool legato)
-    {
-        if (legato)
-            noteSmoother.setTargetValue (midiNoteNumber);
-        else
+        if (! legato)
+        {
             noteSmoother.setCurrentAndTargetValue (midiNoteNumber);
+            return;
+        }
+
+        const auto currentNoteNumber = noteSmoother.getCurrentValue();
+        const auto intervalSemitones = std::abs (midiNoteNumber - currentNoteNumber);
+
+        const auto rampSeconds = mode == GlideMode::fixedRate
+                               ? glideSeconds * intervalSemitones / semitonesPerOctave
+                               : glideSeconds;
+
+        noteSmoother.reset (sampleRate, rampSeconds);
+        noteSmoother.setCurrentAndTargetValue (currentNoteNumber);
+        noteSmoother.setTargetValue (midiNoteNumber);
     }
 
     float getNextNoteNumber() noexcept { return noteSmoother.getNextValue(); }
@@ -40,5 +51,4 @@ public:
 private:
     juce::SmoothedValue<float> noteSmoother;
     double sampleRate = 44100.0;
-    float glideTimeSeconds = 0.0f;
 };

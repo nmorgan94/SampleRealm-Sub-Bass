@@ -28,7 +28,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
 
     addControl (Parameters::saturationDriveId.getParamID(), "Drive");
     addControl (Parameters::saturationDriveEnvId.getParamID(), "Drive Env");
-    addControl (Parameters::glideTimeId.getParamID(), "Glide");
+    glideControl = &addControl (Parameters::glideTimeId.getParamID(), "Glide");
+
+    addAndMakeVisible (glideModeButton);
+    glideModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (
+        processorRef.getAPVTS(), Parameters::glideModeId.getParamID(), glideModeButton);
 
     masterGainSlider.setPopupDisplayEnabled (true, true, this);
     addAndMakeVisible (masterGainSlider);
@@ -141,6 +145,9 @@ void AudioPluginAudioProcessorEditor::resized()
     const int knobX = meterX - gap - knobSize;
     masterGainSlider.setBounds (knobX, (titleBarHeight - knobSize) / 2, knobSize, knobSize);
 
+    constexpr int glideModePillWidth = 52;
+    constexpr int glideModePillHeight = 15;
+
     constexpr int presetComboWidth = 130;
     constexpr int presetButtonWidth = 44;
     constexpr int presetControlHeight = 24;
@@ -184,6 +191,10 @@ void AudioPluginAudioProcessorEditor::resized()
         {
             const auto index = static_cast<size_t> (row * numColumns + col);
             auto cell = content.withTrimmedLeft (columnOffset + col * cellWidth).withWidth (cellWidth).reduced (6);
+
+            if (controls[index].get() == glideControl)
+                glideModeButton.setBounds (cell.removeFromBottom (glideModePillHeight)
+                                               .withSizeKeepingCentre (glideModePillWidth, glideModePillHeight));
 
             controls[index]->setBounds (cell);
         }

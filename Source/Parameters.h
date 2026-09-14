@@ -23,6 +23,7 @@ namespace Parameters
     inline const juce::ParameterID saturationDriveEnvId { "saturationDriveEnv", versionHint };
 
     inline const juce::ParameterID glideTimeId { "glideTime", versionHint };
+    inline const juce::ParameterID glideModeId { "glideMode", versionHint };
 
     juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
 }

@@ -144,6 +144,8 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     voiceParams.saturationDrive = paramValue (Parameters::saturationDriveId);
     voiceParams.saturationDriveEnv = paramValue (Parameters::saturationDriveEnvId);
     voiceParams.glideTime = paramValue (Parameters::glideTimeId);
+    voiceParams.glideMode = paramValue (Parameters::glideModeId) >= 0.5f ? GlideMode::fixedRate
+                                                                         : GlideMode::fixedTime;
     voice.setParameters (voiceParams);
 
     int currentSample = 0;

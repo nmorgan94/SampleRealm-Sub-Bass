@@ -18,6 +18,7 @@ public:
         float saturationDrive = 0.2f;
         float saturationDriveEnv = 0.0f;
         float glideTime = 0.0f;
+        GlideMode glideMode = GlideMode::fixedRate;
     };
 
     void prepare (double sampleRate);

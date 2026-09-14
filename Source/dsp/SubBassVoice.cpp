@@ -19,12 +19,11 @@ void SubBassVoice::setParameters (const Params& newParams)
     adsrParams.sustain = params.sustain;
     adsrParams.release = params.release;
     adsr.setParameters (adsrParams);
-    glide.setGlideTime (params.glideTime);
 }
 
 void SubBassVoice::noteOn (int midiNoteNumber, bool retrigger)
 {
-    glide.startNote (static_cast<float> (midiNoteNumber), ! retrigger);
+    glide.startNote (static_cast<float> (midiNoteNumber), ! retrigger, params.glideTime, params.glideMode);
 
     if (retrigger)
         adsr.noteOn();
@@ -37,7 +36,7 @@ void SubBassVoice::noteOff()
 
 void SubBassVoice::updateOscillatorFrequencies (float noteNumber)
 {
-    const auto baseNote = noteNumber + static_cast<float> (params.octave * 12);
+    const auto baseNote = noteNumber + static_cast<float> (params.octave) * semitonesPerOctave;
 
     osc1.setFrequency (noteNumberToFrequencyHz (baseNote + params.osc1Fine / 100.0f));
     osc2.setFrequency (noteNumberToFrequencyHz (baseNote + params.osc2Fine / 100.0f));

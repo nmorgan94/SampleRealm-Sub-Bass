@@ -5,6 +5,7 @@
 #include "ui/EnvelopeVisualizer.h"
 #include "ui/LabeledSlider.h"
 #include "ui/LevelMeter.h"
+#include "ui/PillButton.h"
 #include "ui/PresetComboBox.h"
 
 //==============================================================================
@@ -34,6 +35,10 @@ private:
     std::vector<std::unique_ptr<LabeledSlider>> controls;
 
     EnvelopeVisualizer envelopeVisualizer;
+
+    PillButton glideModeButton { "TIME", "RATE" };
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> glideModeAttachment;
+    LabeledSlider* glideControl = nullptr;
 
     PresetComboBox presetComboBox;
     juce::TextButton savePresetButton { "Save" };

@@ -1,5 +1,11 @@
 #include "SubBassVoice.h"
 
+namespace
+{
+    // Wheel messages arrive in coarse steps, so the bend needs smoothing to avoid zippering.
+    constexpr double bendSmoothingSeconds = 0.01;
+}
+
 //==============================================================================
 void SubBassVoice::prepare (double sampleRate)
 {
@@ -7,6 +13,7 @@ void SubBassVoice::prepare (double sampleRate)
     osc2.prepare (sampleRate);
     adsr.setSampleRate (sampleRate);
     glide.prepare (sampleRate);
+    bendNormalised.reset (sampleRate, bendSmoothingSeconds);
 }
 
 void SubBassVoice::setParameters (const Params& newParams)
@@ -34,9 +41,15 @@ void SubBassVoice::noteOff()
     adsr.noteOff();
 }
 
+void SubBassVoice::setPitchBend (float normalisedBend)
+{
+    bendNormalised.setTargetValue (normalisedBend);
+}
+
 void SubBassVoice::updateOscillatorFrequencies (float noteNumber)
 {
-    const auto baseNote = noteNumber + static_cast<float> (params.octave) * semitonesPerOctave;
+    const auto baseNote = noteNumber + static_cast<float> (params.octave) * semitonesPerOctave
+                                     + bendNormalised.getNextValue() * params.pitchBendRange;
 
     osc1.setFrequency (noteNumberToFrequencyHz (baseNote + params.osc1Fine / 100.0f));
     osc2.setFrequency (noteNumberToFrequencyHz (baseNote + params.osc2Fine / 100.0f));
@@ -45,7 +58,11 @@ void SubBassVoice::updateOscillatorFrequencies (float noteNumber)
 void SubBassVoice::renderNextBlock (juce::AudioBuffer<float>& buffer, int startSample, int numSamples)
 {
     if (! adsr.isActive())
+    {
+        // Time still passes while silent, so a bend moved between notes has settled by the next one.
+        bendNormalised.skip (numSamples);
         return;
+    }
 
     for (int i = 0; i < numSamples; ++i)
     {

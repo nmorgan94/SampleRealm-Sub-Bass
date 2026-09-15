@@ -58,6 +58,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createLayout()
         std::make_unique<juce::AudioParameterBool>(
             glideModeId, "Glide Mode", true,
             juce::AudioParameterBoolAttributes().withStringFromValueFunction (
-                [] (bool isFixedRate, int) { return isFixedRate ? "Rate" : "Time"; }))
+                [] (bool isFixedRate, int) { return isFixedRate ? "Rate" : "Time"; })),
+
+        std::make_unique<juce::AudioParameterFloat>(
+            pitchBendId, "Pitch Bend",
+            juce::NormalisableRange<float> (-1.0f, 1.0f, 0.0001f), 0.0f),
+        std::make_unique<juce::AudioParameterInt>(
+            pitchBendRangeId, "Bend Range", 0, 24, 2,
+            juce::AudioParameterIntAttributes().withLabel ("st"))
     };
 }

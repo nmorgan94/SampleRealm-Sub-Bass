@@ -25,5 +25,8 @@ namespace Parameters
     inline const juce::ParameterID glideTimeId { "glideTime", versionHint };
     inline const juce::ParameterID glideModeId { "glideMode", versionHint };
 
+    inline const juce::ParameterID pitchBendId { "pitchBend", versionHint };
+    inline const juce::ParameterID pitchBendRangeId { "pitchBendRange", versionHint };
+
     juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
 }

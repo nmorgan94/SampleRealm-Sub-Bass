@@ -146,7 +146,11 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     voiceParams.glideTime = paramValue (Parameters::glideTimeId);
     voiceParams.glideMode = paramValue (Parameters::glideModeId) >= 0.5f ? GlideMode::fixedRate
                                                                          : GlideMode::fixedTime;
+    voiceParams.pitchBendRange = paramValue (Parameters::pitchBendRangeId);
     voice.setParameters (voiceParams);
+
+    if (const auto bend = pitchBendInput.takeParameterChange())
+        voice.setPitchBend (*bend);
 
     int currentSample = 0;
 
@@ -199,6 +203,10 @@ void AudioPluginAudioProcessor::handleMidiEvent (const juce::MidiMessage& messag
             voice.noteOff();
         else
             voice.noteOn (heldNotes.back(), false);
+    }
+    else if (message.isPitchWheel())
+    {
+        voice.setPitchBend (pitchBendInput.handlePitchWheel (message.getPitchWheelValue()));
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "Parameters.h"
+#include "PitchBendInput.h"
 #include "PresetManager.h"
 #include "dsp/SubBassVoice.h"
 
@@ -62,6 +63,8 @@ private:
 
     SubBassVoice voice;
     std::vector<int> heldNotes;
+
+    PitchBendInput pitchBendInput { *apvts.getParameter (Parameters::pitchBendId.getParamID()) };
 
     std::atomic<float> outputPeakLevel { 0.0f };
     std::atomic<int> clipHoldCounter { 0 };

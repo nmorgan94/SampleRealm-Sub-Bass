@@ -19,6 +19,7 @@ public:
         float saturationDriveEnv = 0.0f;
         float glideTime = 0.0f;
         GlideMode glideMode = GlideMode::fixedRate;
+        float pitchBendRange = 2.0f;
     };
 
     void prepare (double sampleRate);
@@ -26,6 +27,7 @@ public:
 
     void noteOn (int midiNoteNumber, bool retrigger);
     void noteOff();
+    void setPitchBend (float normalisedBend);
     bool isActive() const { return adsr.isActive(); }
 
     void renderNextBlock (juce::AudioBuffer<float>& buffer, int startSample, int numSamples);
@@ -37,6 +39,7 @@ private:
     juce::ADSR adsr;
     Saturator saturator;
     GlideProcessor glide;
+    juce::SmoothedValue<float> bendNormalised;
 
     Params params;
 };

@@ -34,6 +34,11 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     glideModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (
         processorRef.getAPVTS(), Parameters::glideModeId.getParamID(), glideModeButton);
 
+    addAndMakeVisible (pitchWheel);
+    pitchWheel.attachToParameters (processorRef.getAPVTS(),
+                                   Parameters::pitchBendId.getParamID(),
+                                   Parameters::pitchBendRangeId.getParamID());
+
     masterGainSlider.setPopupDisplayEnabled (true, true, this);
     addAndMakeVisible (masterGainSlider);
     masterGainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
@@ -180,17 +185,28 @@ void AudioPluginAudioProcessorEditor::resized()
         if (row == envelopeRowIndex)
             envelopeVisualizer.setBounds (content);
 
-        const int itemsInRow = juce::jmin (numColumns, static_cast<int> (controls.size()) - row * numColumns);
-        if (itemsInRow <= 0)
+        const int controlsInRow = juce::jmin (numColumns, static_cast<int> (controls.size()) - row * numColumns);
+
+        const int leadingCells = row == outputRowIndex ? 1 : 0;
+        const int cellsInRow = leadingCells + controlsInRow;
+        if (cellsInRow <= 0)
             continue;
 
         const int cellWidth = content.getWidth() / numColumns;
-        const int columnOffset = (content.getWidth() - itemsInRow * cellWidth) / 2;
+        const int columnOffset = (content.getWidth() - cellsInRow * cellWidth) / 2;
 
-        for (int col = 0; col < itemsInRow; ++col)
+        const auto cellAt = [&] (int col)
+        {
+            return content.withTrimmedLeft (columnOffset + col * cellWidth).withWidth (cellWidth).reduced (6);
+        };
+
+        if (row == outputRowIndex)
+            pitchWheel.setBounds (cellAt (0));
+
+        for (int col = 0; col < controlsInRow; ++col)
         {
             const auto index = static_cast<size_t> (row * numColumns + col);
-            auto cell = content.withTrimmedLeft (columnOffset + col * cellWidth).withWidth (cellWidth).reduced (6);
+            auto cell = cellAt (leadingCells + col);
 
             if (controls[index].get() == glideControl)
                 glideModeButton.setBounds (cell.removeFromBottom (glideModePillHeight)

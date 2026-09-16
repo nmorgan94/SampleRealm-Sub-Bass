@@ -135,3 +135,48 @@ void CustomLookAndFeel::drawRotarySlider (juce::Graphics& g, int x, int y, int w
     g.setColour (accent);
     g.fillEllipse (tip.x - 2.6f, tip.y - 2.6f, 5.2f, 5.2f);
 }
+
+void CustomLookAndFeel::drawLinearSlider (juce::Graphics& g, int x, int y, int width, int height,
+                                          float sliderPos, float minSliderPos, float maxSliderPos,
+                                          juce::Slider::SliderStyle style, juce::Slider& slider)
+{
+    if (style != juce::Slider::LinearHorizontal)
+    {
+        LookAndFeel_V4::drawLinearSlider (g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
+        return;
+    }
+
+    constexpr float trackHeight = 4.0f;
+    constexpr float capWidth = 14.0f;
+    constexpr float capHeight = 28.0f;
+    constexpr float centreTickHeight = 14.0f;
+
+    const auto bounds = juce::Rectangle<int> (x, y, width, height).toFloat();
+    const auto centre = bounds.getCentre();
+    const auto track = bounds.withSizeKeepingCentre (bounds.getWidth(), trackHeight);
+
+    g.setColour (panelBorder);
+    g.fillRoundedRectangle (track, trackHeight * 0.5f);
+
+    g.setColour (textDim);
+    g.fillRect (juce::Rectangle<float> (1.0f, centreTickHeight).withCentre (centre));
+
+    const auto litTrack = track.withLeft (juce::jmin (centre.x, sliderPos)).withRight (juce::jmax (centre.x, sliderPos));
+    g.setColour (accent.withAlpha (0.22f));
+    g.fillRect (litTrack.expanded (0.0f, 2.5f));
+    g.setColour (accent);
+    g.fillRect (litTrack);
+
+    const auto cap = juce::Rectangle<float> (capWidth, capHeight).withCentre ({ sliderPos, centre.y });
+
+    juce::ColourGradient capGradient (panel.brighter (0.2f), cap.getX(), cap.getY(),
+                                      panel.darker (0.5f), cap.getX(), cap.getBottom(), false);
+    g.setGradientFill (capGradient);
+    g.fillRoundedRectangle (cap, 3.0f);
+
+    g.setColour (panelBorder);
+    g.drawRoundedRectangle (cap, 3.0f, 1.2f);
+
+    g.setColour (accent);
+    g.fillRect (juce::Rectangle<float> (2.0f, capHeight * 0.5f).withCentre (cap.getCentre()));
+}

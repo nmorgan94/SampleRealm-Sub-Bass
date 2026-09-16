@@ -26,7 +26,17 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createLayout()
 
         std::make_unique<juce::AudioParameterFloat>(
             oscMixId, "Osc Mix",
-            juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f),
+            juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f,
+            juce::AudioParameterFloatAttributes()
+                .withStringFromValueFunction ([] (float mix, int)
+                {
+                    const auto osc2Percent = juce::roundToInt (mix * 100.0f);
+                    return juce::String (100 - osc2Percent) + " / " + juce::String (osc2Percent);
+                })
+                .withValueFromStringFunction ([] (const juce::String& text)
+                {
+                    return text.fromLastOccurrenceOf ("/", false, false).getFloatValue() / 100.0f;
+                })),
 
         std::make_unique<juce::AudioParameterFloat>(
             envAttackId, "Attack",

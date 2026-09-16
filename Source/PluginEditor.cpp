@@ -18,8 +18,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
 
     addControl (Parameters::oscOctaveId.getParamID(), "Octave", juce::Slider::IncDecButtons);
     addControl (Parameters::osc1FineId.getParamID(), "Osc 1 Fine");
+    addControl (Parameters::oscMixId.getParamID(), "Osc Mix", juce::Slider::LinearHorizontal);
     addControl (Parameters::osc2FineId.getParamID(), "Osc 2 Fine");
-    addControl (Parameters::oscMixId.getParamID(), "Osc Mix");
 
     addCurveKnob (addControl (Parameters::envAttackId.getParamID(), "Attack"),
                   Parameters::envAttackCurveId.getParamID());

@@ -8,7 +8,7 @@ A monophonic sub-bass synthesizer
 - 2 sine oscillators with independent fine tuning
 - Shared octave offset, −4 to 0 octaves
 - Fine pitch, ±50 cents per oscillator
-- Continuous crossfade between the two oscillators
+- Crossfader between the two fine knobs, reading as an Osc 1 / Osc 2 percentage split (e.g. `70 / 30`)
 
 ### Voice
 - Monophonic with a held-note stack — the most recent note sounds
@@ -31,7 +31,7 @@ A monophonic sub-bass synthesizer
 ### Envelope
 - ADSR with attack, decay, and release from 1 ms to 5 seconds
 - Skewed ranges for finer control at short times
-- Attack, decay, and release each have a curve knob, −1 to +1; double-click to reset to linear:
+- Attack, decay, and release each have a curve knob, −1 to +1; double-click to reset to linear
 
 ### Saturation
 - tanh soft-clip drive, applied pre-envelope

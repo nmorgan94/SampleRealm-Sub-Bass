@@ -207,6 +207,11 @@ void AudioPluginAudioProcessor::handleMidiEvent (const juce::MidiMessage& messag
         else
             voice.noteOn (heldNotes.back(), false);
     }
+    else if (message.isAllNotesOff() || message.isAllSoundOff())
+    {
+        heldNotes.clear();
+        voice.noteOff();
+    }
     else if (message.isPitchWheel())
     {
         voice.setPitchBend (pitchBendInput.handlePitchWheel (message.getPitchWheelValue()));

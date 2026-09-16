@@ -19,6 +19,9 @@ public:
     void attachToParameter (juce::AudioProcessorValueTreeState& apvts, const juce::String& paramId);
     void setLabelText (const juce::String& newText);
 
+    /** Places a caller-owned component in a strip beneath the name label, centred at the given size. */
+    void setAccessory (juce::Component& component, int width, int height);
+
     void resized() override;
     void mouseDoubleClick (const juce::MouseEvent&) override;
     void parentHierarchyChanged() override;
@@ -36,6 +39,10 @@ private:
 
     juce::String nameText;
     bool isDragging = false;
+
+    juce::Component* accessory = nullptr;
+    int accessoryWidth = 0;
+    int accessoryHeight = 0;
 
     static constexpr int labelHeight = 16;
     static constexpr int revertDelayMs = 600;

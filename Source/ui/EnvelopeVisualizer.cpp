@@ -1,6 +1,7 @@
 #include "EnvelopeVisualizer.h"
 #include "CustomLookAndFeel.h"
-#include "../dsp/Saturator.h"
+#include "../dsp/Curve.h"
+#include "../dsp/DriveEnvelopeModulation.h"
 #include <cmath>
 
 namespace
@@ -21,10 +22,10 @@ EnvelopeVisualizer::EnvelopeVisualizer()
 
 void EnvelopeVisualizer::setADSR (float attackSeconds, float decaySeconds, float newSustainLevel, float releaseSeconds)
 {
-    if (juce::approximatelyEqual (attackTime, attackSeconds)
-        && juce::approximatelyEqual (decayTime, decaySeconds)
-        && juce::approximatelyEqual (sustainLevel, newSustainLevel)
-        && juce::approximatelyEqual (releaseTime, releaseSeconds))
+    if (juce::exactlyEqual (attackTime, attackSeconds)
+        && juce::exactlyEqual (decayTime, decaySeconds)
+        && juce::exactlyEqual (sustainLevel, newSustainLevel)
+        && juce::exactlyEqual (releaseTime, releaseSeconds))
         return;
 
     attackTime = attackSeconds;
@@ -36,12 +37,25 @@ void EnvelopeVisualizer::setADSR (float attackSeconds, float decaySeconds, float
 
 void EnvelopeVisualizer::setDrive (float driveAmount, float envAmount)
 {
-    if (juce::approximatelyEqual (drive, driveAmount)
-        && juce::approximatelyEqual (driveEnvAmount, envAmount))
+    if (juce::exactlyEqual (drive, driveAmount)
+        && juce::exactlyEqual (driveEnvAmount, envAmount))
         return;
 
     drive = driveAmount;
     driveEnvAmount = envAmount;
+    repaint();
+}
+
+void EnvelopeVisualizer::setCurves (float attackTension, float decayTension, float releaseTension)
+{
+    if (juce::exactlyEqual (attackCurve, attackTension)
+        && juce::exactlyEqual (decayCurve, decayTension)
+        && juce::exactlyEqual (releaseCurve, releaseTension))
+        return;
+
+    attackCurve = attackTension;
+    decayCurve = decayTension;
+    releaseCurve = releaseTension;
     repaint();
 }
 
@@ -62,12 +76,18 @@ std::array<EnvelopeVisualizer::Breakpoint, 5> EnvelopeVisualizer::buildBreakpoin
     const auto x3 = x2 + width * sustainFraction / totalFraction;
     const auto x4 = x3 + width * releaseFraction / totalFraction;
 
-    return { { { x0, 0.0f }, { x1, 1.0f }, { x2, sustainLevel }, { x3, sustainLevel }, { x4, 0.0f } } };
+    return { { { x0, 0.0f, 0.0f },
+               { x1, 1.0f, attackCurve },
+               { x2, sustainLevel, decayCurve },
+               { x3, sustainLevel, 0.0f },
+               { x4, 0.0f, releaseCurve } } };
 }
 
-juce::Path EnvelopeVisualizer::buildPath (juce::Rectangle<float> bounds, int stepsPerSegment,
+juce::Path EnvelopeVisualizer::buildPath (juce::Rectangle<float> bounds,
                                           const std::function<float (float)>& levelForEnv) const
 {
+    constexpr int stepsPerSegment = 24;
+
     const auto points = buildBreakpoints (bounds);
     const auto bottom = bounds.getBottom();
     const auto height = bounds.getHeight();
@@ -82,9 +102,10 @@ juce::Path EnvelopeVisualizer::buildPath (juce::Rectangle<float> bounds, int ste
         for (int step = 1; step <= stepsPerSegment; ++step)
         {
             const auto segmentFraction = static_cast<float> (step) / static_cast<float> (stepsPerSegment);
+            const auto shapedFraction = shapeProgress (segmentFraction, points[i].curve);
 
             path.lineTo (points[i - 1].x + (points[i].x - points[i - 1].x) * segmentFraction,
-                         envToY (points[i - 1].env + (points[i].env - points[i - 1].env) * segmentFraction));
+                         envToY (points[i - 1].env + (points[i].env - points[i - 1].env) * shapedFraction));
         }
     }
 
@@ -94,7 +115,7 @@ juce::Path EnvelopeVisualizer::buildPath (juce::Rectangle<float> bounds, int ste
 void EnvelopeVisualizer::paint (juce::Graphics& g)
 {
     const auto bounds = getLocalBounds().toFloat();
-    const auto outline = buildPath (bounds, 1, [] (float env) { return env; });
+    const auto outline = buildPath (bounds, [] (float env) { return env; });
 
     auto fill = outline;
     fill.lineTo (bounds.getRight(), bounds.getBottom());
@@ -112,10 +133,7 @@ void EnvelopeVisualizer::paint (juce::Graphics& g)
     constexpr int numDashLengths = 2;
     constexpr float dashLengths[numDashLengths] = { 4.0f, 4.0f };
 
-    // Unlike the envelope this bends between breakpoints, so it needs subdividing to look smooth.
-    constexpr int driveCurveSteps = 24;
-
-    const auto driveCurve = buildPath (bounds, driveCurveSteps, [this] (float env)
+    const auto driveCurve = buildPath (bounds, [this] (float env)
     {
         return drive * driveEnvelopeModulation (env, driveEnvAmount);
     });

@@ -15,10 +15,23 @@ A monophonic sub-bass synthesizer
 - Legato retriggering: the envelope restarts only on the first note of a phrase, so overlapping notes change pitch without a new attack
 - Sample-accurate note timing, MIDI events split within the block
 
+### Glide
+- Slides only between overlapping notes; releasing between notes jumps straight to pitch
+- Glide time 0 to 1 second, skewed for finer control at short times
+- Mode switch under the knob:
+  - **Rate** (default) — the time is for a one-octave slide, so smaller intervals slide proportionally faster
+  - **Time** — every slide takes the set time, whatever the interval
+
+### Pitch Wheel
+- Follows MIDI pitch bend, and the on-screen wheel moves with it
+- Drag the wheel to bend; it springs back to centre on release
+- Bend range 0 to 24 semitones (default ±2), set by dragging the **RANGE** box; double-click to reset
+- Bend is a parameter, so it can be automated and is saved with presets
+
 ### Envelope
 - ADSR with attack, decay, and release from 1 ms to 5 seconds
 - Skewed ranges for finer control at short times
-- Drawn behind the sliders, with the effective drive curve overlaid on the same
+- Attack, decay, and release each have a curve knob, −1 to +1; double-click to reset to linear:
 
 ### Saturation
 - tanh soft-clip drive, applied pre-envelope
@@ -35,12 +48,11 @@ at Drive 0 the note stays clean whatever the amount is set to:
 | `0`    | full Drive          |
 | `−1`   | rises to full Drive |
 
+Drive Env follows the envelope's curves, not a straight version of them.
+
 ### Output
 - Master gain, −60 to +6 dB
 
-
-Adding a parameter means touching `Parameters.h`, `Parameters.cpp`, and one
-`addControl()` line in `PluginEditor.cpp`.
 
 ## Build Requirements
 

@@ -65,6 +65,16 @@ void LabeledSlider::setLabelText (const juce::String& newText)
     showName();
 }
 
+void LabeledSlider::setAccessory (juce::Component& component, int width, int height)
+{
+    accessory = &component;
+    accessoryWidth = width;
+    accessoryHeight = height;
+
+    addAndMakeVisible (component);
+    resized();
+}
+
 void LabeledSlider::timerCallback()
 {
     stopTimer();
@@ -84,6 +94,10 @@ void LabeledSlider::showName()
 void LabeledSlider::resized()
 {
     auto bounds = getLocalBounds();
+
+    if (accessory != nullptr)
+        accessory->setBounds (bounds.removeFromBottom (accessoryHeight).withSizeKeepingCentre (accessoryWidth, accessoryHeight));
+
     label.setBounds (bounds.removeFromBottom (labelHeight));
 
     if (slider.getSliderStyle() == juce::Slider::IncDecButtons)

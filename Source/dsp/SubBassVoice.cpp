@@ -20,12 +20,7 @@ void SubBassVoice::setParameters (const Params& newParams)
 {
     params = newParams;
 
-    juce::ADSR::Parameters adsrParams;
-    adsrParams.attack = params.attack;
-    adsrParams.decay = params.decay;
-    adsrParams.sustain = params.sustain;
-    adsrParams.release = params.release;
-    adsr.setParameters (adsrParams);
+    adsr.setParameters (params.envelope);
 }
 
 void SubBassVoice::noteOn (int midiNoteNumber, bool retrigger)

@@ -43,6 +43,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createLayout()
             envReleaseId, "Release",
             juce::NormalisableRange<float> (0.001f, 5.0f, 0.001f, 0.3f), 0.2f,
             juce::AudioParameterFloatAttributes().withLabel ("s")),
+        std::make_unique<juce::AudioParameterFloat>(
+            envAttackCurveId, "Attack Curve",
+            juce::NormalisableRange<float> (-1.0f, 1.0f, 0.001f), 0.0f),
+        std::make_unique<juce::AudioParameterFloat>(
+            envDecayCurveId, "Decay Curve",
+            juce::NormalisableRange<float> (-1.0f, 1.0f, 0.001f), 0.0f),
+        std::make_unique<juce::AudioParameterFloat>(
+            envReleaseCurveId, "Release Curve",
+            juce::NormalisableRange<float> (-1.0f, 1.0f, 0.001f), 0.0f),
 
         std::make_unique<juce::AudioParameterFloat>(
             saturationDriveId, "Drive",

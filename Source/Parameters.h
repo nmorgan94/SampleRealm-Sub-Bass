@@ -18,6 +18,9 @@ namespace Parameters
     inline const juce::ParameterID envDecayId { "envDecay", versionHint };
     inline const juce::ParameterID envSustainId { "envSustain", versionHint };
     inline const juce::ParameterID envReleaseId { "envRelease", versionHint };
+    inline const juce::ParameterID envAttackCurveId { "envAttackCurve", versionHint };
+    inline const juce::ParameterID envDecayCurveId { "envDecayCurve", versionHint };
+    inline const juce::ParameterID envReleaseCurveId { "envReleaseCurve", versionHint };
 
     inline const juce::ParameterID saturationDriveId { "saturationDrive", versionHint };
     inline const juce::ParameterID saturationDriveEnvId { "saturationDriveEnv", versionHint };

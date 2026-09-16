@@ -1,6 +1,8 @@
 #pragma once
 
 #include <juce_audio_basics/juce_audio_basics.h>
+#include "CurvedADSR.h"
+#include "DriveEnvelopeModulation.h"
 #include "Glide.h"
 #include "Oscillator.h"
 #include "Saturator.h"
@@ -14,7 +16,7 @@ public:
         int octave = 0;
         float osc1Fine = 0.0f, osc2Fine = 0.0f;
         float oscMix = 0.5f;
-        float attack = 0.005f, decay = 0.1f, sustain = 0.8f, release = 0.2f;
+        CurvedADSR::Parameters envelope;
         float saturationDrive = 0.2f;
         float saturationDriveEnv = 0.0f;
         float glideTime = 0.0f;
@@ -36,7 +38,7 @@ private:
     void updateOscillatorFrequencies (float noteNumber);
 
     SineOscillator osc1, osc2;
-    juce::ADSR adsr;
+    CurvedADSR adsr;
     Saturator saturator;
     GlideProcessor glide;
     juce::SmoothedValue<float> bendNormalised;

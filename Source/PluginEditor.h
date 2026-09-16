@@ -24,6 +24,8 @@ public:
 private:
     void timerCallback() override;
 
+    void addCurveKnob (LabeledSlider& owner, const juce::String& paramId);
+
     LabeledSlider& addControl (const juce::String& paramId, const juce::String& labelText,
                                juce::Slider::SliderStyle style = juce::Slider::RotaryHorizontalVerticalDrag);
 
@@ -35,11 +37,13 @@ private:
 
     std::vector<std::unique_ptr<LabeledSlider>> controls;
 
+    std::vector<std::unique_ptr<juce::Slider>> curveKnobs;
+    std::vector<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>> curveKnobAttachments;
+
     EnvelopeVisualizer envelopeVisualizer;
 
     PillButton glideModeButton { "TIME", "RATE" };
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> glideModeAttachment;
-    LabeledSlider* glideControl = nullptr;
     PitchWheel pitchWheel;
 
     PresetComboBox presetComboBox;

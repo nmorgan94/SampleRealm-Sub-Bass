@@ -137,10 +137,13 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     voiceParams.osc1Fine = paramValue (Parameters::osc1FineId);
     voiceParams.osc2Fine = paramValue (Parameters::osc2FineId);
     voiceParams.oscMix = paramValue (Parameters::oscMixId);
-    voiceParams.attack = paramValue (Parameters::envAttackId);
-    voiceParams.decay = paramValue (Parameters::envDecayId);
-    voiceParams.sustain = paramValue (Parameters::envSustainId);
-    voiceParams.release = paramValue (Parameters::envReleaseId);
+    voiceParams.envelope.attack = paramValue (Parameters::envAttackId);
+    voiceParams.envelope.decay = paramValue (Parameters::envDecayId);
+    voiceParams.envelope.sustain = paramValue (Parameters::envSustainId);
+    voiceParams.envelope.release = paramValue (Parameters::envReleaseId);
+    voiceParams.envelope.attackCurve = paramValue (Parameters::envAttackCurveId);
+    voiceParams.envelope.decayCurve = paramValue (Parameters::envDecayCurveId);
+    voiceParams.envelope.releaseCurve = paramValue (Parameters::envReleaseCurveId);
     voiceParams.saturationDrive = paramValue (Parameters::saturationDriveId);
     voiceParams.saturationDriveEnv = paramValue (Parameters::saturationDriveEnvId);
     voiceParams.glideTime = paramValue (Parameters::glideTimeId);

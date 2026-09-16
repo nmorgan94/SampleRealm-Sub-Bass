@@ -21,16 +21,21 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     addControl (Parameters::osc2FineId.getParamID(), "Osc 2 Fine");
     addControl (Parameters::oscMixId.getParamID(), "Osc Mix");
 
-    addControl (Parameters::envAttackId.getParamID(), "Attack");
-    addControl (Parameters::envDecayId.getParamID(), "Decay");
+    addCurveKnob (addControl (Parameters::envAttackId.getParamID(), "Attack"),
+                  Parameters::envAttackCurveId.getParamID());
+    addCurveKnob (addControl (Parameters::envDecayId.getParamID(), "Decay"),
+                  Parameters::envDecayCurveId.getParamID());
     addControl (Parameters::envSustainId.getParamID(), "Sustain");
-    addControl (Parameters::envReleaseId.getParamID(), "Release");
+    addCurveKnob (addControl (Parameters::envReleaseId.getParamID(), "Release"),
+                  Parameters::envReleaseCurveId.getParamID());
 
     addControl (Parameters::saturationDriveId.getParamID(), "Drive");
     addControl (Parameters::saturationDriveEnvId.getParamID(), "Drive Env");
-    glideControl = &addControl (Parameters::glideTimeId.getParamID(), "Glide");
+    constexpr int glideModePillWidth = 52;
+    constexpr int glideModePillHeight = 15;
 
-    addAndMakeVisible (glideModeButton);
+    addControl (Parameters::glideTimeId.getParamID(), "Glide")
+        .setAccessory (glideModeButton, glideModePillWidth, glideModePillHeight);
     glideModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (
         processorRef.getAPVTS(), Parameters::glideModeId.getParamID(), glideModeButton);
 
@@ -75,6 +80,9 @@ void AudioPluginAudioProcessorEditor::timerCallback()
                                 *apvts.getRawParameterValue (Parameters::envReleaseId.getParamID()));
     envelopeVisualizer.setDrive (*apvts.getRawParameterValue (Parameters::saturationDriveId.getParamID()),
                                  *apvts.getRawParameterValue (Parameters::saturationDriveEnvId.getParamID()));
+    envelopeVisualizer.setCurves (*apvts.getRawParameterValue (Parameters::envAttackCurveId.getParamID()),
+                                  *apvts.getRawParameterValue (Parameters::envDecayCurveId.getParamID()),
+                                  *apvts.getRawParameterValue (Parameters::envReleaseCurveId.getParamID()));
 }
 
 //==============================================================================
@@ -89,6 +97,21 @@ LabeledSlider& AudioPluginAudioProcessorEditor::addControl (
 
     controls.push_back (std::move (control));
     return *controls.back();
+}
+
+void AudioPluginAudioProcessorEditor::addCurveKnob (LabeledSlider& owner, const juce::String& paramId)
+{
+    constexpr int curveKnobSize = 32;
+
+    auto knob = std::make_unique<juce::Slider> (juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::NoTextBox);
+    knob->setPopupDisplayEnabled (true, true, this);
+    knob->setDoubleClickReturnValue (true, 0.0);
+
+    curveKnobAttachments.push_back (std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
+        processorRef.getAPVTS(), paramId, *knob));
+
+    owner.setAccessory (*knob, curveKnobSize, curveKnobSize);
+    curveKnobs.push_back (std::move (knob));
 }
 
 //==============================================================================
@@ -150,9 +173,6 @@ void AudioPluginAudioProcessorEditor::resized()
     const int knobX = meterX - gap - knobSize;
     masterGainSlider.setBounds (knobX, (titleBarHeight - knobSize) / 2, knobSize, knobSize);
 
-    constexpr int glideModePillWidth = 52;
-    constexpr int glideModePillHeight = 15;
-
     constexpr int presetComboWidth = 130;
     constexpr int presetButtonWidth = 44;
     constexpr int presetControlHeight = 24;
@@ -206,13 +226,7 @@ void AudioPluginAudioProcessorEditor::resized()
         for (int col = 0; col < controlsInRow; ++col)
         {
             const auto index = static_cast<size_t> (row * numColumns + col);
-            auto cell = cellAt (leadingCells + col);
-
-            if (controls[index].get() == glideControl)
-                glideModeButton.setBounds (cell.removeFromBottom (glideModePillHeight)
-                                               .withSizeKeepingCentre (glideModePillWidth, glideModePillHeight));
-
-            controls[index]->setBounds (cell);
+            controls[index]->setBounds (cellAt (leadingCells + col));
         }
     }
 }

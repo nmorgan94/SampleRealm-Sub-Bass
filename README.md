@@ -11,7 +11,7 @@ A monophonic sub-bass synthesizer
 - Crossfader between the two fine knobs, reading as an Osc 1 / Osc 2 percentage split (e.g. `70 / 30`)
 
 ### Voice
-- Monophonic with a held-note stack — the most recent note sounds
+- Monophonic with a held-note stack - the most recent note sounds
 - Legato retriggering: the envelope restarts only on the first note of a phrase, so overlapping notes change pitch without a new attack
 - Sample-accurate note timing, MIDI events split within the block
 
@@ -19,8 +19,8 @@ A monophonic sub-bass synthesizer
 - Slides only between overlapping notes; releasing between notes jumps straight to pitch
 - Glide time 0 to 1 second, skewed for finer control at short times
 - Mode switch under the knob:
-  - **Rate** (default) — the time is for a one-octave slide, so smaller intervals slide proportionally faster
-  - **Time** — every slide takes the set time, whatever the interval
+  - **Rate** (default) - the time is for a one-octave slide, so smaller intervals slide proportionally faster
+  - **Time** - every slide takes the set time, whatever the interval
 
 ### Pitch Wheel
 - Follows MIDI pitch bend, and the on-screen wheel moves with it
@@ -39,7 +39,7 @@ A monophonic sub-bass synthesizer
 
 #### Drive Env
 
-Drive Env scales Drive rather than offsetting it, which keeps Drive a ceiling —
+Drive Env scales Drive rather than offsetting it, which keeps Drive a ceiling -
 at Drive 0 the note stays clean whatever the amount is set to:
 
 | Amount | As the note decays  |
